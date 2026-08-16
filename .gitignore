@@ -1,0 +1,18 @@
+# python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# never commit real client documents or anything produced from them
+/input/
+/output/
+*.extracted.json
+*.fields.csv
+*.lines.csv
+
+# secrets, in case a future version needs any
+.env
+
+# misc
+.DS_Store
