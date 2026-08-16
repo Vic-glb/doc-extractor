@@ -17,7 +17,7 @@ from .model import Confidence, Invoice, Level
 _CONFIDENCE_STYLE = {
     Confidence.FOUND: "green",
     Confidence.UNCERTAIN: "yellow",
-    Confidence.MISSING: "bright_blue",
+    Confidence.MISSING: "#5FA8FF",
 }
 _CONFIDENCE_LABEL = {
     Confidence.FOUND: "found",
@@ -25,7 +25,7 @@ _CONFIDENCE_LABEL = {
     Confidence.MISSING: "not found",
 }
 
-_LEVEL_STYLE = {Level.OK: "green", Level.WARNING: "yellow", Level.ERROR: "bright_blue"}
+_LEVEL_STYLE = {Level.OK: "green", Level.WARNING: "yellow", Level.ERROR: "#5FA8FF"}
 _LEVEL_LABEL = {Level.OK: "consistent", Level.WARNING: "incomplete", Level.ERROR: "does not add up"}
 
 _FIELD_LABELS = {
@@ -117,7 +117,7 @@ def render_summary(invoices: list[Invoice], console: Console) -> None:
             _number(invoice.gross_total.value),
             str(len(invoice.lines)),
             Text(str(review), style="yellow" if review else "green"),
-            Text("does not add up", style="bright_blue") if errors
+            Text("does not add up", style="#5FA8FF") if errors
             else Text("consistent", style="green"),
         )
     console.print(table)

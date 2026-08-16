@@ -47,6 +47,15 @@ def build_parser() -> argparse.ArgumentParser:
                      help="print one row per document instead of the full detail")
     run.add_argument("--fail-on-error", action="store_true",
                      help="exit with code 2 if any document does not add up")
+
+    show = sub.add_parser(
+        "demo",
+        help="run over the bundled sample invoices and print a readable overview",
+    )
+    show.add_argument("--samples", type=Path, default=Path("samples"),
+                      help="folder holding the sample invoices (default: samples)")
+    show.add_argument("--export-png", type=Path, help="save the output as a PNG")
+    show.add_argument("--width", type=int, default=118, help="output width (default: 118)")
     return parser
 
 
@@ -69,8 +78,52 @@ def process(path: Path) -> Invoice:
     return invoice
 
 
+def run_demo(args) -> int:
+    """Extract the bundled samples and print the overview tables."""
+    from .demo import render_arithmetic, render_field_matrix, render_notes, sample_paths
+
+    console = Console(record=bool(args.export_png), width=args.width)
+
+    paths = sample_paths(args.samples)
+    if not paths:
+        console.print(
+            f"[red]No sample invoices found in {args.samples}.[/red]\n"
+            "Generate them first: python samples/make_invoices.py"
+        )
+        return 1
+
+    invoices: list[Invoice] = []
+    for path in paths:
+        try:
+            invoices.append(process(path))
+        except (EmptyTextLayer, OSError, ValueError) as exc:
+            console.print(f"[red]Skipped {path.name}:[/red] {exc}")
+
+    if not invoices:
+        console.print("[red]Nothing could be extracted.[/red]")
+        return 1
+
+    console.print()
+    render_field_matrix(invoices, console)
+    console.print()
+    render_arithmetic(invoices, console)
+    console.print()
+    render_notes(invoices, console)
+
+    if args.export_png:
+        try:
+            export_png(console, args.export_png)
+            console.print(f"\n[bold green]Image:[/bold green] {args.export_png}")
+        except (OSError, ValueError, ImportError) as exc:
+            console.print(f"[yellow]Could not write the PNG:[/yellow] {exc}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
+    if args.command == "demo":
+        return run_demo(args)
+
     exporting = bool(args.export_png)
     width = args.width or (110 if exporting else None)
     console = Console(record=exporting, width=width)
@@ -130,7 +183,7 @@ def main(argv: list[str] | None = None) -> int:
     if failures:
         console.print(f"\n[yellow]{failures} document(s) could not be read.[/yellow]")
     if args.fail_on_error and any(invoice.has_errors() for invoice in invoices):
-        console.print("[bright_blue]Some documents do not add up — see the checks above.[/bright_blue]")
+        console.print("[#5FA8FF]Some documents do not add up — see the checks above.[/#5FA8FF]")
         return 2
     return 0
 

@@ -156,3 +156,49 @@ def test_png_export_produces_a_real_image(tmp_path):
     with Image.open(png) as image:
         assert image.format == "PNG"
         assert image.height > 300
+
+
+# ------------------------------------------------------------------------ demo
+
+
+def test_demo_covers_every_sample_and_shows_both_tables(capsys):
+    code = main(["demo"])
+    output = capsys.readouterr().out
+
+    assert code == 0
+    assert "Every field, and how sure the extractor is" in output
+    assert "Does the invoice agree with itself?" in output
+    # The three statuses must all be visible: that is the point of the table.
+    for status in ("found", "check this"):
+        assert status in output
+
+
+def test_demo_shows_the_arithmetic_gap_of_the_broken_invoice(capsys):
+    main(["demo"])
+    output = capsys.readouterr().out
+
+    assert "does not add up" in output
+    assert "100.00" in output, "the gap between computed and stated should be shown"
+
+
+def test_demo_explains_every_flagged_field(capsys):
+    main(["demo"])
+    output = capsys.readouterr().out
+
+    assert "What was flagged, and why" in output
+    assert "control digit" in output
+
+
+def test_demo_reports_a_missing_samples_folder(tmp_path, capsys):
+    code = main(["demo", "--samples", str(tmp_path)])
+
+    assert code == 1
+    assert "No sample invoices found" in capsys.readouterr().out
+
+
+def test_demo_can_export_an_image(tmp_path):
+    png = tmp_path / "demo.png"
+    assert main(["demo", "--export-png", str(png)]) == 0
+
+    with Image.open(png) as image:
+        assert image.height > 400

@@ -3,7 +3,14 @@
 Pulls structured data out of text-based invoice PDFs, and checks that the numbers on the
 invoice agree with each other.
 
-![Example run](docs/example-run.png)
+![Demo run](docs/demo.png)
+
+The overview above comes from one command, which runs the extractor over the six bundled
+sample invoices:
+
+```bash
+./.venv/bin/python -m doc_extractor demo
+```
 
 ## Context
 
@@ -84,6 +91,18 @@ Several files, with every output:
 | `--width 120` | Force the output width, for redirected output |
 | `--fail-on-error` | Exit with code 2 if any document does not add up |
 
+There is also a `demo` command, which runs over the bundled samples and prints the field
+matrix, the arithmetic table and the list of flagged values shown at the top of this page.
+It writes nothing:
+
+```bash
+./.venv/bin/python -m doc_extractor demo --export-png demo.png
+```
+
+A single document in full detail:
+
+![One document in detail](docs/example-run.png)
+
 Exit codes: `0` success, `1` nothing could be extracted, `2` extraction succeeded but a
 document does not add up (only with `--fail-on-error`).
 
@@ -137,7 +156,7 @@ python samples/make_invoices.py     # generate the sample PDFs first
 ./.venv/bin/python -m pytest tests/ -q
 ```
 
-**98 tests, all passing**, run against the six generated invoices:
+**103 tests, all passing**, run against the six generated invoices:
 
 | Area | Examples covered |
 |---|---|
@@ -148,6 +167,7 @@ python samples/make_invoices.py     # generate the sample PDFs first
 | Checks | Each check passing and failing, a missing total downgrading to incomplete rather than failing, one-grosz tolerance, skipped rows suppressing a false mismatch, and that checks never modify the invoice |
 | Output | Confidence kept beside each value, amounts written as strings, missing fields as `null`, BOM for Excel |
 | CLI | Every exit code, a scan skipped without losing the rest of the batch, forced width |
+| Demo | The overview covers every sample, shows the arithmetic gap, and explains each flagged field |
 
 ## Sample documents
 
