@@ -25,8 +25,8 @@ from .model import Confidence, Invoice, Level
 
 #: Symbol and colour per confidence, for the compact matrix.
 _MARK = {
-    Confidence.FOUND: ("found", "green"),
-    Confidence.UNCERTAIN: ("check this", "yellow"),
+    Confidence.FOUND: ("found", "#3FB950"),
+    Confidence.UNCERTAIN: ("check this", "#D29922"),
     Confidence.MISSING: ("not found", "#5FA8FF"),
 }
 
@@ -113,7 +113,7 @@ def render_arithmetic(invoices: list[Invoice], console: Console) -> None:
                 continue
             difference = finding.difference or Decimal(0)
             style = {
-                Level.OK: "green", Level.WARNING: "yellow", Level.ERROR: "#5FA8FF",
+                Level.OK: "#3FB950", Level.WARNING: "#D29922", Level.ERROR: "#5FA8FF",
             }[finding.level]
             label = {
                 Level.OK: "matches", Level.WARNING: "incomplete", Level.ERROR: "does not add up",
@@ -124,7 +124,7 @@ def render_arithmetic(invoices: list[Invoice], console: Console) -> None:
                 _money(finding.expected),
                 _money(finding.actual),
                 Text(_money(difference) if difference else "0.00",
-                     style="#5FA8FF" if difference else "green"),
+                     style="#5FA8FF" if difference else "#3FB950"),
                 Text(label, style=style),
             )
             shown += 1

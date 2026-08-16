@@ -113,9 +113,9 @@ def run_demo(args) -> int:
     if args.export_png:
         try:
             export_png(console, args.export_png)
-            console.print(f"\n[bold green]Image:[/bold green] {args.export_png}")
+            console.print(f"\n[bold #3FB950]Image:[/bold #3FB950] {args.export_png}")
         except (OSError, ValueError, ImportError) as exc:
-            console.print(f"[yellow]Could not write the PNG:[/yellow] {exc}")
+            console.print(f"[#D29922]Could not write the PNG:[/#D29922] {exc}")
     return 0
 
 
@@ -162,13 +162,13 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.json:
             write_json(invoices, args.json)
-            console.print(f"[bold green]JSON:[/bold green]       {args.json}")
+            console.print(f"[bold #3FB950]JSON:[/bold #3FB950]       {args.json}")
         if args.fields_csv:
             write_fields_csv(invoices, args.fields_csv)
-            console.print(f"[bold green]Fields CSV:[/bold green] {args.fields_csv}")
+            console.print(f"[bold #3FB950]Fields CSV:[/bold #3FB950] {args.fields_csv}")
         if args.lines_csv:
             write_lines_csv(invoices, args.lines_csv)
-            console.print(f"[bold green]Lines CSV:[/bold green]  {args.lines_csv}")
+            console.print(f"[bold #3FB950]Lines CSV:[/bold #3FB950]  {args.lines_csv}")
     except OSError as exc:
         console.print(f"[red]Cannot write the output:[/red] {exc}")
         return 1
@@ -176,12 +176,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.export_png:
         try:
             export_png(console, args.export_png)
-            console.print(f"[bold green]Image:[/bold green]      {args.export_png}")
+            console.print(f"[bold #3FB950]Image:[/bold #3FB950]      {args.export_png}")
         except (OSError, ValueError, ImportError) as exc:
-            console.print(f"[yellow]Could not write the PNG:[/yellow] {exc}")
+            console.print(f"[#D29922]Could not write the PNG:[/#D29922] {exc}")
 
     if failures:
-        console.print(f"\n[yellow]{failures} document(s) could not be read.[/yellow]")
+        console.print(f"\n[#D29922]{failures} document(s) could not be read.[/#D29922]")
     if args.fail_on_error and any(invoice.has_errors() for invoice in invoices):
         console.print("[#5FA8FF]Some documents do not add up — see the checks above.[/#5FA8FF]")
         return 2

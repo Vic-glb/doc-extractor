@@ -15,8 +15,8 @@ from rich.text import Text
 from .model import Confidence, Invoice, Level
 
 _CONFIDENCE_STYLE = {
-    Confidence.FOUND: "green",
-    Confidence.UNCERTAIN: "yellow",
+    Confidence.FOUND: "#3FB950",
+    Confidence.UNCERTAIN: "#D29922",
     Confidence.MISSING: "#5FA8FF",
 }
 _CONFIDENCE_LABEL = {
@@ -25,7 +25,7 @@ _CONFIDENCE_LABEL = {
     Confidence.MISSING: "not found",
 }
 
-_LEVEL_STYLE = {Level.OK: "green", Level.WARNING: "yellow", Level.ERROR: "#5FA8FF"}
+_LEVEL_STYLE = {Level.OK: "#3FB950", Level.WARNING: "#D29922", Level.ERROR: "#5FA8FF"}
 _LEVEL_LABEL = {Level.OK: "consistent", Level.WARNING: "incomplete", Level.ERROR: "does not add up"}
 
 _FIELD_LABELS = {
@@ -116,9 +116,9 @@ def render_summary(invoices: list[Invoice], console: Console) -> None:
             invoice.number.value or Text("—", style="dim"),
             _number(invoice.gross_total.value),
             str(len(invoice.lines)),
-            Text(str(review), style="yellow" if review else "green"),
+            Text(str(review), style="#D29922" if review else "#3FB950"),
             Text("does not add up", style="#5FA8FF") if errors
-            else Text("consistent", style="green"),
+            else Text("consistent", style="#3FB950"),
         )
     console.print(table)
 
